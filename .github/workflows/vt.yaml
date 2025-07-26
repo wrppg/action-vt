@@ -1,8 +1,7 @@
 name: CI
 
 on:
-  push:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
   build:
@@ -23,8 +22,8 @@ jobs:
     - name: Download and install jq
       if: steps.cache-jq.outputs.cache-hit != 'true'
       run: |
-        curl -L -o jq https://github.com/jqlang/jq/releases/download/jq-1.7/jq-linux64
-        echo "b3a00d65f753d325b0c6a1b528498de0fd747f5c6e8c86e5664d3b3b1c0c6b0a  jq" | sha256sum -c
+        curl -L -o jq https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64
+        echo "020468de7539ce70ef1bceaf7cde2e8c4f2ca6c3afb84642aabc5c97d9fc2a0d  jq" | sha256sum -c
         chmod +x jq
         //mkdir -p ~/.jq
         mv jq ~/jq
