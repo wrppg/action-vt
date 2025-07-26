@@ -11,6 +11,7 @@ jobs:
     - name: pwd
       run: |
         pwd
+        echo $HOME
         echo $PATH
 
     - name: Cache jq
