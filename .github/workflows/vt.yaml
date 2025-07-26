@@ -9,7 +9,9 @@ jobs:
 
     steps:
     - name: pwd
-      run: pwd
+      run: |
+        pwd
+        echo $PATH
 
     - name: Cache jq
       id: cache-jq
