@@ -25,7 +25,7 @@ jobs:
         curl -L -o jq https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64
         echo "020468de7539ce70ef1bceaf7cde2e8c4f2ca6c3afb84642aabc5c97d9fc2a0d  jq" | sha256sum -c
         chmod +x jq
-        //mkdir -p ~/.jq
+        #mkdir -p ~/.jq
         mv jq ~/jq
 
     - name: Run jq command
