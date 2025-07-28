@@ -1,4 +1,4 @@
-name: CI
+name: Test VT
 
 on:
   workflow_dispatch:
@@ -14,23 +14,41 @@ jobs:
         echo $HOME
         echo $PATH
 
+    - name: Cache vt
+      id: cache-vt
+      uses: actions/cache@v4
+      with:
+        path: ~/vt
+        key: vt-${{ runner.os }}-vt-1.1.1
+        restore-keys: vt-${{ runner.os }}-
+    
     - name: Cache jq
       id: cache-jq
       uses: actions/cache@v4
       with:
         path: ~/jq
-        key: jq-${{ runner.os }}-jq-1.7
-        restore-keys: jq-${{ runner.os }}-
+        key: jq-${{ runner.os }}-jq-1.8.1
+
+    - name: Download and install vt
+      if: steps.cache-vt.outputs.cache-hit != 'true'
+      run: |
+        curl -L -o vt.zip https://github.com/VirusTotal/vt-cli/releases/download/1.1.1/Linux64.zip
+        echo "82107394601c5669771be1f11d2ceb2f13f4117d72a3e6346b4ed13a6f10878c Linux64.zip" | sha256sum -c
+        unzip vt.zip
+        chmod +x vt
+        mv vt ~/vt
 
     - name: Download and install jq
       if: steps.cache-jq.outputs.cache-hit != 'true'
       run: |
         curl -L -o jq https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64
-        echo "020468de7539ce70ef1bceaf7cde2e8c4f2ca6c3afb84642aabc5c97d9fc2a0d  jq" | sha256sum -c
+        echo "020468de7539ce70ef1bceaf7cde2e8c4f2ca6c3afb84642aabc5c97d9fc2a0d jq" | sha256sum -c
         chmod +x jq
-        #mkdir -p ~/.jq
         mv jq ~/jq
+        echo "$HOME" >> GITHUB_PATH
 
-    - name: Run jq command
+    - name: Run vt
       run: |
-        echo '{"test": "value"}' | ~/jq '.test'
+        vt init -k ${{ secrets.VT_KEY }}
+        curl -s https://api.github.com/repos/MatsuriDayo/NekoBoxForAndroid/releases/latest | jq -r .assets[].browser_download_url | grep -v x86 | vt scan url - | cut -f 2 -d ' ' | vt analysis -
+        gh release download -R MatsuriDayo/NekoBoxForAndroid '*arm*''.apk'
