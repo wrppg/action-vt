@@ -49,11 +49,14 @@ jobs:
     - name: Add GITHUB_PATH
       run: echo "$HOME" >> "$GITHUB_PATH"
 
-    - name: Run vt
-      env:
-        GH_TOKEN: ${{ github.token }}
+    - name: vt scan urls
       run: |
         vt init -k ${{ secrets.VT_KEY }}
         curl -s https://api.github.com/repos/MatsuriDayo/NekoBoxForAndroid/releases/latest | jq -r .assets[].browser_download_url | grep -v x86 | vt scan url - | cut -f 2 -d ' ' | vt analysis -
+        
+    - name: vt scan files
+      env:
+        GH_TOKEN: ${{ github.token }}
+      run: |
         gh release download -R MatsuriDayo/NekoBoxForAndroid -p '*arm*''.apk'
-        vt scan file *.apk
+        vt scan file *.apk | cut -f 2 -d ' ' | vt analysis -
