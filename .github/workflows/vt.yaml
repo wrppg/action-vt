@@ -33,7 +33,7 @@ jobs:
       if: steps.cache-vt.outputs.cache-hit != 'true'
       run: |
         curl -L -o vt.zip https://github.com/VirusTotal/vt-cli/releases/download/1.1.1/Linux64.zip
-        echo "82107394601c5669771be1f11d2ceb2f13f4117d72a3e6346b4ed13a6f10878c Linux64.zip" | sha256sum -c
+        echo "82107394601c5669771be1f11d2ceb2f13f4117d72a3e6346b4ed13a6f10878c vt.zip" | sha256sum -c
         unzip vt.zip
         chmod +x vt
         mv vt ~/vt
