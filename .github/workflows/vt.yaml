@@ -45,7 +45,7 @@ jobs:
         echo "020468de7539ce70ef1bceaf7cde2e8c4f2ca6c3afb84642aabc5c97d9fc2a0d jq" | sha256sum -c
         chmod +x jq
         mv jq ~/jq
-        echo "$HOME" >> GITHUB_PATH
+        echo "$HOME" >> "$GITHUB_PATH"
 
     - name: Run vt
       run: |
