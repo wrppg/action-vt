@@ -50,7 +50,7 @@ jobs:
       run: echo "$HOME" >> "$GITHUB_PATH"
 
     - name: Aliases
-      run: alias vt="vt -k ${{ secrets.VT_KEY }}"
+      run: alias vt="vt --apikey ${{ secrets.VT_KEY }}"
 
     - name: vt scan urls
       run: |
