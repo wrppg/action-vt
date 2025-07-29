@@ -49,7 +49,7 @@ jobs:
     - name: Add GITHUB_PATH
       run: echo "$HOME" >> "$GITHUB_PATH"
 
-    -name: Aliases
+    - name: Aliases
       run: alias vt="vt -k ${{ secrets.VT_KEY }}"
 
     - name: vt scan urls
