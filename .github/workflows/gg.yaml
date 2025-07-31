@@ -1,4 +1,4 @@
-name: Process Release
+name: VT scan release
 on:
   workflow_dispatch:
     inputs:
@@ -16,3 +16,52 @@ jobs:
         run: |
           echo "Repository: ${{ github.event.inputs.repo }}"
           echo "Tag: ${{ github.event.inputs.tag }}"
+
+      - name: Cache vt
+        id: cache-vt
+        uses: actions/cache@v4
+        with:
+          path: ~/vt
+          key: vt-${{ runner.os }}-vt-1.1.1
+          restore-keys: vt-${{ runner.os }}-
+    
+      - name: Cache jq
+        id: cache-jq
+        uses: actions/cache@v4
+        with:
+          path: ~/jq
+          key: jq-${{ runner.os }}-jq-1.8.1
+  
+      - name: Download and install vt
+        if: steps.cache-vt.outputs.cache-hit != 'true'
+        run: |
+          curl -L -o vt.zip https://github.com/VirusTotal/vt-cli/releases/download/1.1.1/Linux64.zip
+          echo "82107394601c5669771be1f11d2ceb2f13f4117d72a3e6346b4ed13a6f10878c vt.zip" | sha256sum -c
+          unzip vt.zip
+          chmod +x vt
+          mv vt ~/vt
+  
+      - name: Download and install jq
+        if: steps.cache-jq.outputs.cache-hit != 'true'
+        run: |
+          curl -L -o jq https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64
+          echo "020468de7539ce70ef1bceaf7cde2e8c4f2ca6c3afb84642aabc5c97d9fc2a0d jq" | sha256sum -c
+          chmod +x jq
+          mv jq ~/jq
+  
+      - name: Add GITHUB_PATH
+        run: echo "$HOME" >> "$GITHUB_PATH"
+  
+      - name: init vt
+        run: vt init -k ${{ secrets.VT_KEY }}
+  
+      - name: vt scan urls
+        run: |
+          curl -s "https://api.github.com/repos/${{ github.event.inputs.repo }}/releases/latest" | jq -r .assets[].browser_download_url | grep -v x86 | vt scan url - | cut -f 2 -d ' ' | vt analysis -
+          
+      - name: vt scan files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release download "${{ github.event.inputs.tag }}" -R "${{ github.event.inputs.repo }}" -p '*.apk'
+          vt scan file *.apk | cut -f 2 -d ' ' | vt analysis -
