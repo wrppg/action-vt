@@ -63,5 +63,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          gh release download "${{ github.event.inputs.tag }}" -R "${{ github.event.inputs.repo }}" -p '*.apk'
+          gh release download "${{ github.event.inputs.tag }}" -R "${{ github.event.inputs.repo }}" -p '*.apk' -p '*.apks'
           vt scan file *.apk | cut -f 2 -d ' ' | vt analysis -
