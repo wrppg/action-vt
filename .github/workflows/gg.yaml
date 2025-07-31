@@ -59,7 +59,8 @@ jobs:
         id: scan-urls
         run: |
           urls=$(curl -s "https://api.github.com/repos/${{ github.event.inputs.repo }}/releases/latest" | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86) || echo "result=failure" >> $GITHUB_OUTPUT
-          printf "%s\n" $urls | vt scan url - | cut -f 2 -d ' ' | vt analysis -  
+          #printf "%s\n" $urls | vt scan url - | cut -f 2 -d ' ' | vt analysis -
+          vt scan url - <<< $urls | cut -f 2 -d ' ' | vt analysis -
           
       - name: vt scan files
         if: steps.scan-urls.outputs.result != 'failure'
