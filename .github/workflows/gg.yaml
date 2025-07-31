@@ -56,10 +56,12 @@ jobs:
         run: vt init -k ${{ secrets.VT_KEY }}
   
       - name: vt scan urls
+        id: scan-urls
         run: |
-          curl -s "https://api.github.com/repos/${{ github.event.inputs.repo }}/releases/latest" | jq -r .assets[].browser_download_url | grep -v x86 | vt scan url - | cut -f 2 -d ' ' | vt analysis -
+          curl -s "https://api.github.com/repos/${{ github.event.inputs.repo }}/releases/latest" | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 | vt scan url - | cut -f 2 -d ' ' | vt analysis - || echo "result=failure" >> $GITHUB_OUTPUT 
           
       - name: vt scan files
+        if: step.scan-urls.outputs.result != 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
