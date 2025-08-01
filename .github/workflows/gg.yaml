@@ -60,7 +60,7 @@ jobs:
         run: |
           release_id=$(curl -s "https://api.github.com/repos/${{ github.event.inputs.repo }}/releases/tags/${{ github.event.inputs.tag }}" | jq .id)
           urls=$(curl -s "https://api.github.com/repos/${{ github.event.inputs.repo }}/releases/${release_id}" | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86) || echo "result=failure" >> $GITHUB_OUTPUT
-          #printf "%s\n" $urls | vt scan url - | cut -f 2 -d ' ' | vt analysis -
+          printf "%s\n" $urls
           vt scan url - <<< $urls | cut -f 2 -d ' ' | vt analysis -
           
       - name: vt scan files
