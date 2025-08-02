@@ -63,13 +63,13 @@ jobs:
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
-          printf "%s\n" ${{ steps.find-apk-urls.outputs.result }}
-          vt scan url - <<< ${{ steps.find-apk-urls.outputs.result }} | cut -f 2 -d ' ' | vt analysis -
+          #printf "%s\n" ${{ steps.find-apk-urls.outputs.result }}
+          vt scan url - <<< ${{ steps.find-apk-urls.outputs.urls }} | cut -f 2 -d ' ' | vt analysis -
           
       - name: vt scan files
         if: steps.find-apk-urls.outputs.result != 'failure'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          curl -LO ${{ steps.find-apk-urls.outputs.result }}
+          curl -LO ${{ steps.find-apk-urls.outputs.urls }}
           vt scan file *.apk | cut -f 2 -d ' ' | vt analysis -
