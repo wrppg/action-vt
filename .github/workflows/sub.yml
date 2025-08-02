@@ -73,5 +73,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           urls=$(cat ~/urls.txt)
-          curl -LO -Z $urls
+          curl -L -Z --remote-name-all $urls
           vt scan file *.apk | cut -f 2 -d ' ' | vt analysis -
