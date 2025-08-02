@@ -55,23 +55,29 @@ jobs:
       - name: extract apk(s) urls
         id: find-apk-urls
         run: |
-          curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || { echo "result=failure" >> $GITHUB_OUTPUT; exit 0; }
-          cat ~/urls.txt
+          #curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || { echo "result=failure" >> $GITHUB_OUTPUT; exit 0; }
+          #cat ~/urls.txt
+          {
+            echo 'urls<<EOF'
+            curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86
+            echo 'EOF'
+          } >> GITHUB_OUTPUT || { echo "result=failure" >> $GITHUB_OUTPUT; exit 0; }
           
       - name: vt scan urls
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
-          cat ~/urls.txt
+          vt scan url - <<< ${{ steps.find-apk-urls.outputs.urls }} | cut -f 2 -d ' ' | vt analysis -
+          #cat ~/urls.txt
           # printf "%s\n" ${{ steps.find-apk-urls.outputs.urls }}
-          #vt scan url - <<< ${{ steps.find-apk-urls.outputs.urls }} | cut -f 2 -d ' ' | vt analysis -
-          cat ~/urls.txt | vt scan url - | cut -f 2 -d ' ' | vt analysis -
+          # vt scan url - <<< ${{ steps.find-apk-urls.outputs.urls }} | cut -f 2 -d ' ' | vt analysis -
+          #cat ~/urls.txt | vt scan url - | cut -f 2 -d ' ' | vt analysis -
           
-      - name: vt scan files
-        if: steps.find-apk-urls.outputs.result != 'failure'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          urls=$(cat ~/urls.txt)
-          curl -L -Z --remote-name-all $urls
-          vt scan file *.apk | cut -f 2 -d ' ' | vt analysis -
+      # - name: vt scan files
+      #   if: steps.find-apk-urls.outputs.result != 'failure'
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     urls=$(cat ~/urls.txt)
+      #     curl -L -Z --remote-name-all $urls
+      #     vt scan file *.apk | cut -f 2 -d ' ' | vt analysis -
