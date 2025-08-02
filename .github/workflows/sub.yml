@@ -1,0 +1,11 @@
+name: Print Subject URL
+on:
+  repository_dispatch:
+    types: [notification]
+
+jobs:
+  print-url:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print Subject URL
+        run: echo "Received subject_url:" " ${{ github.event.client_payload.subject_url }}"
