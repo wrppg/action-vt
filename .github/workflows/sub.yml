@@ -1,11 +1,15 @@
 name: Print Subject URL
 on:
-  repository_dispatch:
-    types: [notification]
+  workflow_dispatch:
+    inputs:
+      subject_url:
+        description: 'The subject URL from the GitHub notification'
+        required: true
+        type: string
 
 jobs:
   print-url:
     runs-on: ubuntu-latest
     steps:
       - name: Print Subject URL
-        run: echo "Received subject_url:" " ${{ github.event.client_payload.subject_url }}"
+        run: echo "Received subject_url: ${{ github.event.inputs.subject_url }}"
