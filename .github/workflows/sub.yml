@@ -65,7 +65,7 @@ jobs:
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
-          #printf "%s\n" ${{ steps.find-apk-urls.outputs.urls }}
+          printf "%s\n" ${{ steps.find-apk-urls.outputs.urls }}
           vt scan url - <<< ${{ steps.find-apk-urls.outputs.urls }} | cut -f 2 -d ' ' | vt analysis -
           
       - name: vt scan files
