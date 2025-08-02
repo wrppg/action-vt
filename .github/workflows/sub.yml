@@ -57,8 +57,9 @@ jobs:
         run: |
           urls=$(curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86) || { echo "result=failure" >> $GITHUB_OUTPUT; exit 0; }
           printf "%s\n" $urls
-          printf "%s\n" $urls >> "$GITHUB_OUTPUT"
-          #echo "urls=$urls" >> "$GITHUB_OUTPUT"
+          echo "urls<<EOF" >> $GITHUB_OUTPUT
+          echo "urls=$urls" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
   
       - name: vt scan urls
         id: scan-urls
