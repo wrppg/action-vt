@@ -1,4 +1,4 @@
-name: Print Subject URL
+name: Scan
 on:
   workflow_dispatch:
     inputs:
@@ -8,8 +8,68 @@ on:
         type: string
 
 jobs:
-  print-url:
+  vt-cli:
     runs-on: ubuntu-latest
     steps:
       - name: Print Subject URL
-        run: echo "Received subject_url:" " ${{ github.event.inputs.subject_url }}"
+        run: echo "Received subject_url:" "${{ github.event.inputs.subject_url }}"
+
+      - name: Cache vt
+        id: cache-vt
+        uses: actions/cache@v4
+        with:
+          path: ~/vt
+          key: vt-${{ runner.os }}-vt-1.1.1
+          restore-keys: vt-${{ runner.os }}-
+    
+      - name: Cache jq
+        id: cache-jq
+        uses: actions/cache@v4
+        with:
+          path: ~/jq
+          key: jq-${{ runner.os }}-jq-1.8.1
+  
+      - name: Download and install vt
+        if: steps.cache-vt.outputs.cache-hit != 'true'
+        run: |
+          curl -L -o vt.zip https://github.com/VirusTotal/vt-cli/releases/download/1.1.1/Linux64.zip
+          echo "82107394601c5669771be1f11d2ceb2f13f4117d72a3e6346b4ed13a6f10878c vt.zip" | sha256sum -c
+          unzip vt.zip
+          chmod +x vt
+          mv vt ~/vt
+  
+      - name: Download and install jq
+        if: steps.cache-jq.outputs.cache-hit != 'true'
+        run: |
+          curl -L -o jq https://github.com/jqlang/jq/releases/download/jq-1.8.1/jq-linux-amd64
+          echo "020468de7539ce70ef1bceaf7cde2e8c4f2ca6c3afb84642aabc5c97d9fc2a0d jq" | sha256sum -c
+          chmod +x jq
+          mv jq ~/jq
+  
+      - name: Add GITHUB_PATH
+        run: echo "$HOME" >> "$GITHUB_PATH"
+  
+      - name: init vt
+        run: vt init -k ${{ secrets.VT_KEY }}
+
+      - name: extract apk(s) urls
+        id: find-apk-urls
+        run: |
+          urls=$(curl -sL ${{ github.event.inputs.subject_url }} | jq .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86) || echo "result=failure" >> $GITHUB_OUTPUT
+          printf "%s\n" $urls
+          echo "urls=$urls" >> $GITHUB_OUTPUT
+  
+      - name: vt scan urls
+        id: scan-urls
+        if: steps.find-apk-urls.outputs.result != 'failure'
+        run: |
+          #printf "%s\n" $urls
+          vt scan url - <<< ${{ steps.find-apk-urls.outputs.result }} | cut -f 2 -d ' ' | vt analysis -
+          
+      - name: vt scan files
+        if: steps.find-apk-urls.outputs.result != 'failure'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -LO ${{ steps.find-apk-urls.outputs.result }}
+          vt scan file *.apk | cut -f 2 -d ' ' | vt analysis -
