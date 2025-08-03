@@ -65,11 +65,11 @@ jobs:
           cat ~/urls.txt
           cat ~/urls.txt | vt scan url - | cut -f 2 -d ' ' | vt analysis -
           
-      - name: vt scan files
-        if: steps.find-apk-urls.outputs.result != 'failure'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          urls=$(cat ~/urls.txt)
-          curl -L -Z --remote-name-all $urls
-          vt scan file *.apk *.apks | cut -f 2 -d ' ' | vt analysis -
+      # - name: vt scan files
+      #   if: steps.find-apk-urls.outputs.result != 'failure'
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
+      #   run: |
+      #     urls=$(cat ~/urls.txt)
+      #     curl -L -Z --remote-name-all $urls
+      #     vt scan file *.apk *.apks | cut -f 2 -d ' ' | vt analysis -
