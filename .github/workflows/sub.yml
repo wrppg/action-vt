@@ -55,8 +55,8 @@ jobs:
       - name: extract apk(s) urls
         id: find-apk-urls
         run: |
-          curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || { echo "result=failure" >> $GITHUB_OUTPUT; exit 0; }
-          cat ~/urls.txt
+          curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || echo "result=failure" >> $GITHUB_OUTPUT
+          cat ~/urls.txt || exit 0
           
       - name: vt scan urls
         id: scan-urls
