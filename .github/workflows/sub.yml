@@ -1,4 +1,4 @@
-name: Scan
+name: Analysis
 on:
   workflow_dispatch:
     inputs:
