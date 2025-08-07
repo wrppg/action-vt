@@ -56,7 +56,7 @@ jobs:
         run: |
           # cat ~/urls.txt
           # cat ~/urls.txt | python3 vt.py --apikey="${VT_KEY}"
-          # python vt.py --apikey="${VT_KEY}" --url='www.google.com'
+          python vt.py --apikey="${VT_KEY}" --url='www.google.com'
           python -V
           
       # - name: vt scan files
