@@ -5,9 +5,7 @@ import sys
 import select
 
 async def scan_url(apikey, url):
-    print(f"submitting... {url}")
     async with vt.Client(apikey) as client:
-        print("what the hack?")
         try:
             # Submit URL for scanning with wait_for_completion.
             # Returns a vt.Object of analysis type, per vt.Client.scan_url_async documentation.
@@ -38,7 +36,6 @@ async def scan_url(apikey, url):
             print(f"Error for {url}: {e}")
 
 async def scan_multiple_urls(apikey, urls):
-    print("scan_multiple_urls() is called")
     # Create tasks for scanning each URL concurrently
     tasks = [scan_url(apikey, url) for url in urls]
     # Run tasks concurrently and wait for all to complete
@@ -56,15 +53,13 @@ def main():
     if args.url:
         urls = [args.url]
     else:
-        urls = [line.strip() for line in sys.stdin if line.strip()]
         # Check if stdin has data without blocking
-        # if select.select([sys.stdin], [], [], 0.0)[0]:
-        #     urls = [line.strip() for line in sys.stdin if line.strip()]
+        if select.select([sys.stdin], [], [], 0.0)[0]:
+            urls = [line.strip() for line in sys.stdin if line.strip()]
         if not urls:
             print("Error: No URLs provided via --url or stdin.")
             sys.exit(1)
 
-    print(urls)
     # Run the async scan for all URLs
     asyncio.run(scan_multiple_urls(args.apikey, urls))
 
