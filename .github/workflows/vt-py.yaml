@@ -14,13 +14,14 @@ jobs:
       - name: Print Subject URL
         run: echo "Received subject_url:" "${{ github.event.inputs.subject_url }}"
 
-      - name: Cache vt
-        id: cache-vt
-        uses: actions/cache@v4
+      - uses: actions/checkout@v4
+
+      - name: Setup python
+      - uses: actions/setup-python@v5
         with:
-          path: ~/vt
-          key: vt-${{ runner.os }}-vt-1.1.1
-          restore-keys: vt-${{ runner.os }}-
+          python-version: '3.13'
+          cache: 'pip' # caching pip dependencies
+      - run: pip install -r requirements.txt
     
       - name: Cache jq
         id: cache-jq
@@ -28,16 +29,7 @@ jobs:
         with:
           path: ~/jq
           key: jq-${{ runner.os }}-jq-1.8.1
-  
-      - name: Download and install vt
-        if: steps.cache-vt.outputs.cache-hit != 'true'
-        run: |
-          curl -L -o vt.zip https://github.com/VirusTotal/vt-cli/releases/download/1.1.1/Linux64.zip
-          echo "82107394601c5669771be1f11d2ceb2f13f4117d72a3e6346b4ed13a6f10878c vt.zip" | sha256sum -c
-          unzip vt.zip
-          chmod +x vt
-          mv vt ~/vt
-  
+    
       - name: Download and install jq
         if: steps.cache-jq.outputs.cache-hit != 'true'
         run: |
@@ -46,12 +38,9 @@ jobs:
           chmod +x jq
           mv jq ~/jq
   
-      - name: Add GITHUB_PATH
+      - name: Add jq to GITHUB_PATH
         run: echo "$HOME" >> "$GITHUB_PATH"
   
-      - name: init vt
-        run: vt init -k ${{ secrets.VT_KEY }}
-
       - name: extract apk(s) urls
         id: find-apk-urls
         run: |
@@ -59,13 +48,13 @@ jobs:
           cat ~/urls.txt || exit 0
           
       - name: vt scan urls
+        env:
+          VT_KEY: ${{ VT_KEY }}
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
           cat ~/urls.txt
-          # cat ~/urls.txt | vt scan url - | cut -f 2 -d ' ' | vt analysis -
-          # while IFS= read -r url; do vt scan url "$url" | cut -f 2 -d ' ' | vt analysis -; done < ~/urls.txt
-          while IFS= read -r url; do vt scan url "$url" ; done < ~/urls.txt
+          cat ~/urls.txt | python vt.py --apikey="$VT_KEY"
           
       # - name: vt scan files
       #   if: steps.find-apk-urls.outputs.result != 'failure'
