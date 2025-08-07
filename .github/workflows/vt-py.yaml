@@ -55,7 +55,6 @@ jobs:
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
           cat ~/urls.txt
-          # cat ~/urls.txt | python3 vt.py --apikey="${VT_KEY}"
           cat ~/urls.txt | python vt-async.py --apikey="${VT_KEY}"
           
           
