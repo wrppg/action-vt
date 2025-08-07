@@ -10,6 +10,8 @@ on:
 jobs:
   vt-cli:
     runs-on: ubuntu-latest
+    env:
+      PYTHONUNBUFFERED: 1
     steps:
       - name: Print Subject URL
         run: echo "Received subject_url:" "${{ github.event.inputs.subject_url }}"
