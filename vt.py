@@ -5,6 +5,7 @@ import sys
 import select
 
 async def scan_url(apikey, url):
+    print("submitting... {url}")
     async with vt.Client(apikey) as client:
         try:
             # Submit URL for scanning with wait_for_completion.
