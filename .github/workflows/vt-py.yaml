@@ -51,15 +51,13 @@ jobs:
       - name: vt scan urls
         env:
           VT_KEY: ${{ secrets.VT_KEY }}
-          # VT_KEY: "this is a key"
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
           cat ~/urls.txt
           # cat ~/urls.txt | python3 vt.py --apikey="${VT_KEY}"
-          # cat ~/urls.txt | python vt.py --apikey="${VT_KEY}"
-          # python -V
-          while IFS= read -r url; do python3 vt-s.py --apikey=${VT_KEY} --url=$url; done < ~/urls.txt
+          cat ~/urls.txt | python vt-async.py --apikey="${VT_KEY}"
+          
           
       # - name: vt scan files
       #   if: steps.find-apk-urls.outputs.result != 'failure'
