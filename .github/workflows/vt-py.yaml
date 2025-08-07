@@ -55,8 +55,8 @@ jobs:
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
           # cat ~/urls.txt
-          cat vt.py
-          cat ~/urls.txt | python3 vt.py --apikey="${VT_KEY}"
+          # cat ~/urls.txt | python3 vt.py --apikey="${VT_KEY}"
+          python vt.py --apikey="${VT_KEY}" --url='www.google.com'
           
       # - name: vt scan files
       #   if: steps.find-apk-urls.outputs.result != 'failure'
