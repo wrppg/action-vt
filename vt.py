@@ -36,6 +36,7 @@ async def scan_url(apikey, url):
             print(f"Error for {url}: {e}")
 
 async def scan_multiple_urls(apikey, urls):
+    print("scan_multiple_urls() is called")
     # Create tasks for scanning each URL concurrently
     tasks = [scan_url(apikey, url) for url in urls]
     # Run tasks concurrently and wait for all to complete
