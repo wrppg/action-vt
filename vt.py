@@ -53,9 +53,10 @@ def main():
     if args.url:
         urls = [args.url]
     else:
+        urls = [line.strip() for line in sys.stdin if line.strip()]
         # Check if stdin has data without blocking
-        if select.select([sys.stdin], [], [], 0.0)[0]:
-            urls = [line.strip() for line in sys.stdin if line.strip()]
+        # if select.select([sys.stdin], [], [], 0.0)[0]:
+        #     urls = [line.strip() for line in sys.stdin if line.strip()]
         if not urls:
             print("Error: No URLs provided via --url or stdin.")
             sys.exit(1)
