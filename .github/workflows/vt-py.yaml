@@ -19,7 +19,8 @@ jobs:
       - name: Setup python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.13t'
+          python-version: '3.13.5'
+          freethreaded: true
           # cache: 'pip' # caching pip dependencies
           
       - run: pip install vt-py
