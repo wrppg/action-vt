@@ -3,13 +3,6 @@ import asyncio
 import argparse
 import sys
 import select
-import logging
-
-# Basic configuration (optional, sets up a default handler and formatter)
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-
-# Get a logger instance
-logger = logging.getLogger(__name__)
 
 async def scan_url(apikey, url):
     async with vt.Client(apikey) as client:
@@ -49,8 +42,6 @@ async def scan_multiple_urls(apikey, urls):
     await asyncio.gather(*tasks, return_exceptions=True)
 
 def main():
-    logger.info("logger")
-    print("print")
     # Parse command-line arguments
     parser = argparse.ArgumentParser(description="Scan URLs from stdin or --url using VirusTotal API, retrieve last_http_response_content_sha256, and trigger file reanalysis.")
     parser.add_argument("--apikey", required=True, help="VirusTotal API key")
