@@ -54,8 +54,8 @@ jobs:
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
-          cat ~/urls.txt
-          cat ~/urls.txt | python vt.py --apikey="$VT_KEY"
+          # cat ~/urls.txt
+          cat ~/urls.txt | python vt.py --apikey="${VT_KEY}"
           
       # - name: vt scan files
       #   if: steps.find-apk-urls.outputs.result != 'failure'
