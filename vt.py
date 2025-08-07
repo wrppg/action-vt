@@ -62,6 +62,7 @@ def main():
             sys.exit(1)
 
     print(urls)
+    print(apikey)
 
     # Run the async scan for all URLs
     asyncio.run(scan_multiple_urls(args.apikey, urls))
