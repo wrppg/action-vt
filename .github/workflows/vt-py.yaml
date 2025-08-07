@@ -50,7 +50,7 @@ jobs:
           
       - name: vt scan urls
         env:
-          VT_KEY: ${{ VT_KEY }}
+          VT_KEY: ${{ secrets.VT_KEY }}
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
