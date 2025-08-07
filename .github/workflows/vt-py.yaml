@@ -59,7 +59,7 @@ jobs:
           # cat ~/urls.txt | python3 vt.py --apikey="${VT_KEY}"
           # cat ~/urls.txt | python vt.py --apikey="${VT_KEY}"
           # python -V
-          while IFS= read -r url; do python vt-sync.py --apikey="$VT_KEY" --url="$url"; done < ~/urls.txt
+          while IFS= read -r url; do python3 vt-sync.py --apikey=${VT_KEY} --url=$url; done < ~/urls.txt
           
       # - name: vt scan files
       #   if: steps.find-apk-urls.outputs.result != 'failure'
