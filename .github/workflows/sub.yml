@@ -64,7 +64,8 @@ jobs:
         run: |
           cat ~/urls.txt
           # cat ~/urls.txt | vt scan url - | cut -f 2 -d ' ' | vt analysis -
-          while IFS= read -r url; do vt scan url "$url" | cut -f 2 -d ' ' | vt analysis -; done < ~/urls.txt
+          # while IFS= read -r url; do vt scan url "$url" | cut -f 2 -d ' ' | vt analysis -; done < ~/urls.txt
+          while IFS= read -r url; do vt scan url "$url" ; done < ~/urls.txt
           
       # - name: vt scan files
       #   if: steps.find-apk-urls.outputs.result != 'failure'
