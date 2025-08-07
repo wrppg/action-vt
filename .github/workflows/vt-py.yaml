@@ -47,11 +47,14 @@ jobs:
         run: |
           curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || echo "result=failure" >> $GITHUB_OUTPUT
           cat ~/urls.txt || exit 0
-          
+
+      - name: Enable debug logging
+        run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
+        
       - name: vt scan urls
         env:
-          # VT_KEY: ${{ secrets.VT_KEY }}
-          VT_KEY: "this is a key"
+          VT_KEY: ${{ secrets.VT_KEY }}
+          # VT_KEY: "this is a key"
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
