@@ -5,6 +5,12 @@ import sys
 import select
 import logging
 
+# Basic configuration (optional, sets up a default handler and formatter)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+# Get a logger instance
+logger = logging.getLogger(__name__)
+
 async def scan_url(apikey, url):
     async with vt.Client(apikey) as client:
         try:
