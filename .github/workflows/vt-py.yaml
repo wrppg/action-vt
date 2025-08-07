@@ -10,8 +10,6 @@ on:
 jobs:
   vt-cli:
     runs-on: ubuntu-latest
-    env:
-      PYTHONUNBUFFERED: 1
     steps:
       - name: Print Subject URL
         run: echo "Received subject_url:" "${{ github.event.inputs.subject_url }}"
@@ -49,9 +47,6 @@ jobs:
         run: |
           curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || echo "result=failure" >> $GITHUB_OUTPUT
           cat ~/urls.txt || exit 0
-
-      - name: Enable debug logging
-        run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
         
       - name: vt scan urls
         env:
@@ -60,10 +55,11 @@ jobs:
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
-          # cat ~/urls.txt
+          cat ~/urls.txt
           # cat ~/urls.txt | python3 vt.py --apikey="${VT_KEY}"
-          cat ~/urls.txt | python vt.py --apikey="${VT_KEY}"
-          python -V
+          # cat ~/urls.txt | python vt.py --apikey="${VT_KEY}"
+          # python -V
+          while IFS= read -r url; do python vt-sync.py --apikey="$VT_KEY" --url="$url"; done < ~/urls.txt
           
       # - name: vt scan files
       #   if: steps.find-apk-urls.outputs.result != 'failure'
