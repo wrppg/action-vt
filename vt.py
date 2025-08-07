@@ -61,9 +61,6 @@ def main():
             print("Error: No URLs provided via --url or stdin.")
             sys.exit(1)
 
-    print(urls)
-    print(args.apikey)
-
     # Run the async scan for all URLs
     asyncio.run(scan_multiple_urls(args.apikey, urls))
 
