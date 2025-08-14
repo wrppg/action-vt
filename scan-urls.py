@@ -26,13 +26,13 @@ async def scan_url(apikey, url):
                 sha256 = url_obj.last_http_response_content_sha256
                 print(f"last_http_response_content_sha256 for {os.path.basename(url)}: {sha256}")
 
-                if url_obj.last_http_response_content_length > 32 * 10 ** 6:
+                # if url_obj.last_http_response_content_length > 32 * 10 ** 6:
                     # Send POST request to /files/{id}/analyse to trigger file reanalysis, no headers
-                    response = await client.post_async(f"/files/{sha256}/analyse")
-                    response_obj = await response.json_async()  # Use json_async for async context
-                    print(f"File reanalysis triggered for {os.path.basename(url)}. Response: {response_obj.data.id}")
+                response = await client.post_async(f"/files/{sha256}/analyse")
+                    # response_obj = await response.json_async()  # Use json_async for async context
+                print(f"File reanalysis triggered for {os.path.basename(url)} .")
             else:
-                print(f"last_http_response_content_sha256 not available for {url}.")
+                print(f"last_http_response_content_sha256 not available for {url} .")
 
         except vt.error.APIError as e:
             print(f"Error for {url}: {e}")
