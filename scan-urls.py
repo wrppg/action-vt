@@ -3,6 +3,7 @@ import asyncio
 import argparse
 import sys
 import select
+import os.path
 
 async def scan_url(apikey, url):
     async with vt.Client(apikey) as client:
@@ -23,12 +24,13 @@ async def scan_url(apikey, url):
             # as described in vt.Object documentation.
             if hasattr(url_obj, "last_http_response_content_sha256"):
                 sha256 = url_obj.last_http_response_content_sha256
-                print(f"last_http_response_content_sha256 for {url}: {sha256}")
+                print(f"last_http_response_content_sha256 for {os.path.basename(url)}: {sha256}")
 
-                # Send POST request to /files/{id}/analyse to trigger file reanalysis, no headers
-                response = await client.post_async(f"/files/{sha256}/analyse")
-                response_obj = await response.json_async()  # Use json_async for async context
-                print(f"File reanalysis triggered for {url}. Response: {response_obj}")
+                if hasattr(url_obj, "last_http_response_content_length") > 32 * 10 ** 6:
+                    # Send POST request to /files/{id}/analyse to trigger file reanalysis, no headers
+                    response = await client.post_async(f"/files/{sha256}/analyse")
+                    response_obj = await response.json_async()  # Use json_async for async context
+                    print(f"File reanalysis triggered for {os.path.basename(url)}. Response: {response_obj.data.id}")
             else:
                 print(f"last_http_response_content_sha256 not available for {url}.")
 
