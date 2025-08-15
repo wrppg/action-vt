@@ -5,6 +5,7 @@ import aiohttp
 import json
 import re
 import os.path
+import sys
 
 async def fetch_github_assets(github_url):
     async with aiohttp.ClientSession() as session:
