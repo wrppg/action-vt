@@ -71,7 +71,7 @@ def main():
         print("Error: URL must be a GitHub API releases URL (e.g., https://api.github.com/repos/OWNER/REPO/releases/RELEASE_ID/assets)")
         sys.exit(1)
     # Fetch assets from GitHub API, with size-based flags
-    urls_with_flags = asyncio.run(fetch_github_assets(args.url) + 'assets')
+    urls_with_flags = asyncio.run(fetch_github_assets(args.url + 'assets'))
 
     if not urls_with_flags:
         print("Error: No valid .apk or .apks URLs found in the GitHub API response.")
