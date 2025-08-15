@@ -39,11 +39,11 @@ jobs:
   
       - run: echo "$HOME" >> "$GITHUB_PATH"
   
-      - name: extract apk(s) urls
-        id: find-apk-urls
-        run: |
-          curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || echo "result=failure" >> $GITHUB_OUTPUT
-          cat ~/urls.txt || exit 0
+      # - name: extract apk(s) urls
+      #   id: find-apk-urls
+      #   run: |
+      #     curl -sL ${{ github.event.inputs.subject_url }} | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || echo "result=failure" >> $GITHUB_OUTPUT
+      #     cat ~/urls.txt || exit 0
         
       - name: vt scan urls
         env:
@@ -51,6 +51,7 @@ jobs:
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
-          cat ~/urls.txt
-          cat ~/urls.txt | python scan-urls.py --apikey="${VT_KEY}"
+          python scan-urls-opt.py --apikey="${VT_KEY}" --url=${{ github.event.inputs.subject_url }}
+          # cat ~/urls.txt
+          # cat ~/urls.txt | python scan-urls_opt.py --apikey="${VT_KEY}"
           
