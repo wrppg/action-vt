@@ -43,10 +43,11 @@ async def scan_url(apikey, url, is_small_apk):
               if hasattr(url_obj, "last_http_response_content_sha256"):
                   sha256 = url_obj.last_http_response_content_sha256
                   print(f"last_http_response_content_sha256 for {os.path.basename(url)}: {sha256}")
-  
+                  
+                  print(f"File reanalysis triggered for {os.path.basename(url)} .")
                   response = await client.post_async(f"/files/{sha256}/analyse")
-                  response_obj = await response.json_async()
-                  print(f"File reanalysis triggered for {os.path.basename(url)}. Response: {response_obj.data.id}")
+                  # response_obj = await response.json_async()
+                  # print(f"File reanalysis triggered for {os.path.basename(url)}. Response: {response_obj.data.id}")
               else:
                   print(f"last_http_response_content_sha256 not available for {url}.")
 
