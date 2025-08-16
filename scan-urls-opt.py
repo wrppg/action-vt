@@ -33,7 +33,7 @@ async def scan_url(apikey, url, is_small_apk):
         try:
             # Submit URL for scanning, wait_for_completion depends on is_small_apk
             analysis = await client.scan_url_async(url, wait_for_completion=not is_small_apk)
-            print(f"URL scan completed for {url}. Analysis ID: {analysis.id}")
+            print(f"URL scan completed for {url} Analysis ID: {analysis.id}")
             
             if not is_small_apk:
               # Get the URL object using the URL ID
@@ -48,9 +48,9 @@ async def scan_url(apikey, url, is_small_apk):
                   print(f"File reanalysis triggered for {os.path.basename(url)} .")
                   response = await client.post_async(f"/files/{sha256}/analyse")
                   # response_obj = await response.json_async()
-                  # print(f"File reanalysis triggered for {os.path.basename(url)}. Response: {response_obj.data.id}")
+                  # print(f"File reanalysis triggered for {os.path.basename(url)} Response: {response_obj.data.id}")
               else:
-                  print(f"last_http_response_content_sha256 not available for {url}.")
+                  print(f"last_http_response_content_sha256 not available for {url}")
 
         except vt.error.APIError as e:
             print(f"Error for {url}: {e}")
