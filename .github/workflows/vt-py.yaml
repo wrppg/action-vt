@@ -14,7 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Print Subject URL
-        run: echo "Received subject_url:" "${{ github.event.inputs.subject_url }}"
+        run: |
+          url=${url:=${{ github.event.inputs.subject_url }}}; url=${url:=${{ github.event.client_payload.subject_url }}}
+          echo "Received subject_url:" "$url"
+          echo "Received subject_url:" "${{ github.event.inputs.subject_url }}"
 
       - uses: actions/checkout@v4
 
