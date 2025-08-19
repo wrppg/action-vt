@@ -1,5 +1,7 @@
 name: Analysis+
 on:
+  repository_dispatch:
+    types: [analysis]
   workflow_dispatch:
     inputs:
       subject_url:
