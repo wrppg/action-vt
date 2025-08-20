@@ -57,7 +57,7 @@ jobs:
         id: scan-urls
         if: steps.find-apk-urls.outputs.result != 'failure'
         run: |
-          python scan-urls-opt.py --apikey="${VT_KEY}" --url=${{ env.url }}
+          python scan-urls-opt.py --apikey="${VT_KEY}" --url=$url
           # python scan-urls-opt.py --apikey="${VT_KEY}" --url=${{ github.event.inputs.subject_url }}
           # cat ~/urls.txt
           # cat ~/urls.txt | python scan-urls_opt.py --apikey="${VT_KEY}"
