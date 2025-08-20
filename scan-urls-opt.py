@@ -7,8 +7,9 @@ import re
 import os.path
 import sys
 
-async def fetch_github_assets(github_url):
-    async with aiohttp.ClientSession() as session:
+async def fetch_github_assets(github_url, gh_token):
+    headers = {"Authorization": f"Bearer {gh_token}"} if gh_token else None
+    async with aiohttp.ClientSession(headers=headers) as session:
         try:
             async with session.get(github_url) as response:
                 if response.status != 200:
@@ -65,6 +66,7 @@ def main():
     parser = argparse.ArgumentParser(description="Scan URLs from GitHub API using VirusTotal API, retrieve last_http_response_content_sha256, and trigger file reanalysis for non-APK or large APKs.")
     parser.add_argument("--apikey", required=True, help="VirusTotal API key")
     parser.add_argument("--url", required=True, help="GitHub API URL (e.g., https://api.github.com/repos/OWNER/REPO/releases/RELEASE_ID/assets)")
+    parser.add_argument("--gh_token", required=False, help="GitHub Token")
     args = parser.parse_args()
 
     # Determine URLs to process
@@ -73,7 +75,7 @@ def main():
         print("Error: URL must be a GitHub API releases URL (e.g., https://api.github.com/repos/OWNER/REPO/releases/RELEASE_ID/assets)")
         sys.exit(1)
     # Fetch assets from GitHub API, with size-based flags
-    urls_with_flags = asyncio.run(fetch_github_assets(args.url + '/assets'))
+    urls_with_flags = asyncio.run(fetch_github_assets(args.url + '/assets', args.gh_token))
 
     if not urls_with_flags:
         print("Error: No valid .apk or .apks URLs found in the GitHub API response.")
