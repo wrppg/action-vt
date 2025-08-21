@@ -7,13 +7,16 @@ import re
 import os.path
 import sys
 
-def filter_arm64(tup):
+def get_only_arm64(tup):
     filters = ["arm64", "-v8a", "arm-64"]
     for url, flag in tup:
         for arm_64 in filters:
             if arm_64 in url.lower():
                 return [(url, flag)]
     return tup
+
+def filter_out_x86(tup):
+    return [item for item in tup if not re.search(r'[^a-zA-Z](x86|x64)[^a-zA-Z]', item[0].lower())]
     
 async def fetch_github_assets(github_url, gh_token):
     headers = {"Authorization": f"Bearer {gh_token}"} if gh_token else None
@@ -28,18 +31,11 @@ async def fetch_github_assets(github_url, gh_token):
                     print(f"Error: Response from {github_url} is not an array.")
                     return []
                 # Extract browser_download_url and size, filter for .apk/.apks
-                apk_nf = [
-                        (item["browser_download_url"], int(item.get("size", 0)) <= 32 * 1000 * 1000) 
-                          for item in data if item.get("browser_download_url", "").endswith((".apk", ".apks")) 
-                          and not re.search(r'[^a-zA-Z][xX]86[^a-zA-Z]', item.get("browser_download_url", ""))
-                        ]
-                apk_f = filter_arm64(apk_nf)
-                return apk_f if apk_f else apk_nf
-                # return [
-                #     (item["browser_download_url"], int(item.get("size", 0)) <= 32 * 1000 * 1000)
-                #     for item in data
-                #     if item.get("browser_download_url", "").endswith((".apk", ".apks")) and not re.search(r'[^a-zA-Z][xX]86[^a-zA-Z]', item.get("browser_download_url", ""))
-                # ]
+                return [
+                    (item["browser_download_url"], int(item.get("size", 0)) <= 32 * 1000 * 1000)
+                    for item in data
+                    if item.get("browser_download_url", "").endswith((".apk", ".apks"))
+                ]
         except Exception as e:
             print(f"Error fetching GitHub assets from {github_url}: {e}")
             return []
@@ -91,6 +87,11 @@ def main():
         sys.exit(1)
     # Fetch assets from GitHub API, with size-based flags
     urls_with_flags = asyncio.run(fetch_github_assets(args.url + '/assets', args.gh_token))
+    urls_with_flags = get_only_arm64(urls_with_flags)
+    urls_with_flags = filter_out_x86(urls_with_flags)
+    print("These URLs will be process")
+    print(*urls_with_flags, sep='\n')
+    print("------------------------------")
 
     if not urls_with_flags:
         print("Error: No valid .apk or .apks URLs found in the GitHub API response.")
