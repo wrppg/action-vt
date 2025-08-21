@@ -8,9 +8,9 @@ import os.path
 import sys
 
 def filter_arm64(tup):
-    filter = ["arm64", "-v8a", "arm-64"]
+    filters = ["arm64", "-v8a", "arm-64"]
     for url, flag in tup:
-        for arm_64 in filter:
+        for arm_64 in filters:
             if arm_64 in url.lower():
                 return [(url, flag)]
     return tup
