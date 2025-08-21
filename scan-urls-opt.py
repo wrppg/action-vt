@@ -30,9 +30,9 @@ async def fetch_github_assets(github_url, gh_token):
                 if not isinstance(data, list):
                     print(f"Error: Response from {github_url} is not an array.")
                     return []
-                # Extract browser_download_url and size, filter for .apk/.apks
+                # Extract browser_download_url and size, filter for .apk/.apks 33553688 Byte
                 return [
-                    (item["browser_download_url"], int(item.get("size", 0)) <= 32 * 1000 * 1000)
+                    (item["browser_download_url"], int(item.get("size", 0)) <= 33.5 * 1000 * 1000)
                     for item in data
                     if item.get("browser_download_url", "").endswith((".apk", ".apks"))
                 ]
