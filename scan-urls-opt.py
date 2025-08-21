@@ -91,7 +91,7 @@ def main():
     urls_with_flags = filter_out_x86(urls_with_flags)
     print("These URLs will be process")
     print(*urls_with_flags, sep='\n')
-    print("------------------------------")
+    print("--------------------------------------------------------------------------------------")
 
     if not urls_with_flags:
         print("Error: No valid .apk or .apks URLs found in the GitHub API response.")
