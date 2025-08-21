@@ -7,6 +7,14 @@ import re
 import os.path
 import sys
 
+def filter_arm64(tup):
+    filter = ["arm64", "-v8a", "arm-64"]
+    for url, flag in tup:
+        for arm_64 in filter:
+            if arm_64 in url.lower():
+                return [(url, flag)]
+    return tup
+    
 async def fetch_github_assets(github_url, gh_token):
     headers = {"Authorization": f"Bearer {gh_token}"} if gh_token else None
     async with aiohttp.ClientSession(headers=headers) as session:
@@ -20,11 +28,18 @@ async def fetch_github_assets(github_url, gh_token):
                     print(f"Error: Response from {github_url} is not an array.")
                     return []
                 # Extract browser_download_url and size, filter for .apk/.apks
-                return [
-                    (item["browser_download_url"], int(item.get("size", 0)) <= 32 * 1000 * 1000)
-                    for item in data
-                    if item.get("browser_download_url", "").endswith((".apk", ".apks")) and not re.search(r'[^a-zA-Z][xX]86[^a-zA-Z]', item.get("browser_download_url", ""))
-                ]
+                apk_nf = [
+                        (item["browser_download_url"], int(item.get("size", 0)) <= 32 * 1000 * 1000) 
+                          for item in data if item.get("browser_download_url", "").endswith((".apk", ".apks")) 
+                          and not re.search(r'[^a-zA-Z][xX]86[^a-zA-Z]', item.get("browser_download_url", ""))
+                        ]
+                apk_f = filter_arm64(apk_nf)
+                return apk_f if apk_f else apk_nf
+                # return [
+                #     (item["browser_download_url"], int(item.get("size", 0)) <= 32 * 1000 * 1000)
+                #     for item in data
+                #     if item.get("browser_download_url", "").endswith((".apk", ".apks")) and not re.search(r'[^a-zA-Z][xX]86[^a-zA-Z]', item.get("browser_download_url", ""))
+                # ]
         except Exception as e:
             print(f"Error fetching GitHub assets from {github_url}: {e}")
             return []
