@@ -34,7 +34,7 @@ async def fetch_github_assets(github_url, gh_token):
                 return [
                     (item["browser_download_url"], int(item.get("size", 0)) <= 33.5 * 1000 * 1000)
                     for item in data
-                    if item.get("browser_download_url", "").endswith((".apk", ".apks"))
+                    if item.get("browser_download_url", "").lower().endswith((".apk", ".apks"))
                 ]
         except Exception as e:
             print(f"Error fetching GitHub assets from {github_url}: {e}")
