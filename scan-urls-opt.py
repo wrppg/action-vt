@@ -8,7 +8,7 @@ import os.path
 import sys
 
 def get_only_arm64(tup):
-    filters = ["arm64", "-v8a", "arm-64"]
+    filters = ["arm64", "-v8a", "armv8", "arm-64"]
     for url, flag in tup:
         for arm_64 in filters:
             if arm_64 in url.lower():
