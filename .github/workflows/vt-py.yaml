@@ -10,7 +10,7 @@ on:
         type: string
 
 jobs:
-  vt-cli:
+  run:
     runs-on: ubuntu-latest
     steps:
       - name: Print Subject URL
