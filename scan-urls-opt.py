@@ -95,7 +95,7 @@ def main():
 
     if not urls_with_flags:
         print("Error: No valid .apk or .apks URLs found in the GitHub API response.")
-        sys.exit(1)
+        sys.exit(0)
 
     # Run the async scan for all URLs
     asyncio.run(scan_multiple_urls(args.apikey, urls_with_flags))
