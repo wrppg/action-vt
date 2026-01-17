@@ -13,7 +13,7 @@ def get_only_arm64(tup):
     for url, flag in tup:
         for arm_64 in filters:
             if arm_64 in url.lower():
-                r.apepnd((url, flag))
+                r.append((url, flag))
         if len(r) > 0:
             return r
     return tup
