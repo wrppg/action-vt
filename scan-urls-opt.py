@@ -14,7 +14,7 @@ def get_only_arm64(tup):
         for arm_64 in filters:
             if arm_64 in url.lower():
                 r.append((url, flag))
-    return r if len(r) > 0 else tup 
+    return set(r) if len(r) > 0 else tup 
 
 def filter_out_x86(tup):
     return [item for item in tup if not re.search(r'[^a-zA-Z](x86|x64)[^a-zA-Z]', item[0].lower())]
