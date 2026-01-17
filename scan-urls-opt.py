@@ -9,10 +9,13 @@ import sys
 
 def get_only_arm64(tup):
     filters = ["arm64", "-v8a", "armv8", "arm-64"]
+    r = []
     for url, flag in tup:
         for arm_64 in filters:
             if arm_64 in url.lower():
-                return [(url, flag)]
+                r.apepnd((url, flag))
+        if len(r) > 0:
+            return r
     return tup
 
 def filter_out_x86(tup):
