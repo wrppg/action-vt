@@ -84,7 +84,9 @@ jobs:
           fi
 
           echo "$APKs"
+          echo "APKs<<EOF" >> $GITHUB_ENV
           echo "APKs=$APKs" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
           
       - name: vt scan urls
         id: scan-urls
