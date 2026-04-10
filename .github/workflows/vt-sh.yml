@@ -113,7 +113,7 @@ jobs:
           # while IFS= read -r url; do vt scan url "$url" ; done < ~/urls.txt
 
           # cat ~/urls.txt | wget2 -i -
-          curl -L --remote-name-all -Z "$(cat ~/urls.txt)"
+          curl -L --remote-name-all -Z $(cat ~/urls.txt)
           find . -maxdepth 1 \( -name '*.apk' -o  -name '*.apks' \) -exec vt scan file {} \+
           
       # - name: vt scan files
