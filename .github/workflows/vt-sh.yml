@@ -94,6 +94,7 @@ jobs:
           # # while IFS= read -r url; do vt scan url "$url" | cut -f 2 -d ' ' | vt analysis -; done < ~/urls.txt
           # while IFS= read -r url; do vt scan url "$url" ; done < ~/urls.txt
 
+          sudo apt-get update && sudo apt-get install -y wget2
           wget2 "$APKs"
           find . -maxdepth 1 \( -name '*.apk' -o  -name '*.apks' \) -exec vt scan file {} \+
           
