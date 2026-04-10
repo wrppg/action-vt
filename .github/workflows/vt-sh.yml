@@ -33,15 +33,6 @@ jobs:
         with:
           path: ~/jq
           key: jq-${{ runner.os }}-jq-1.8.1
-
-      - name: Cache wget2 apt
-        uses: actions/cache@v4
-        id: cache-wget2
-        with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-wget2-${{ github.run_id }}
-          restore-keys: |
-            ${{ runner.os }}-apt-wget2-
   
       - name: Download and install vt
         if: steps.cache-vt.outputs.cache-hit != 'true'
@@ -60,8 +51,15 @@ jobs:
           chmod +x jq
           mv jq ~/jq
 
+      - name: Cache wget2 apt
+        uses: actions/cache@v4
+        id: cache-wget2
+        with:
+          path: /var/cache/apt/archives
+          key: ${{ runner.os }}-apt-wget2
+
       - name: Update and Download wget2
-        # Only update if the cache was not found to save time
+        if: steps.cache-wget2.outputs.cache-hit != 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y --download-only wget2
