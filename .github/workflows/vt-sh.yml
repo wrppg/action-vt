@@ -51,22 +51,22 @@ jobs:
           chmod +x jq
           mv jq ~/jq
 
-      - name: Cache wget2 apt
-        uses: actions/cache@v4
-        id: cache-wget2
-        with:
-          path: /var/cache/apt/archives
-          key: ${{ runner.os }}-apt-wget2
+      # - name: Cache wget2 apt
+      #   uses: actions/cache@v4
+      #   id: cache-wget2
+      #   with:
+      #     path: /var/cache/apt/archives
+      #     key: ${{ runner.os }}-apt-wget2
 
-      - name: Update and Download wget2
-        if: steps.cache-wget2.outputs.cache-hit != 'true'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y --download-only wget2
+      # - name: Update and Download wget2
+      #   if: steps.cache-wget2.outputs.cache-hit != 'true'
+      #   run: |
+      #     sudo apt-get update
+      #     sudo apt-get install -y --download-only wget2
 
-      - name: Install wget2
-        run: |
-          sudo apt-get install -y wget2
+      # - name: Install wget2
+      #   run: |
+      #     sudo apt-get install -y wget2
   
       - name: Add GITHUB_PATH
         run: |
