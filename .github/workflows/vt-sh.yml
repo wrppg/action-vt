@@ -24,7 +24,7 @@ jobs:
         with:
           path: ~/vt
           key: vt-${{ runner.os }}-vt-1.3.0
-          restore-keys: vt-${{ runner.os }}-
+          # restore-keys: vt-${{ runner.os }}-
     
       - name: Cache jq
         id: cache-jq
