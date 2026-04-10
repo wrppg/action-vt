@@ -54,10 +54,7 @@ jobs:
         run: echo "$HOME" >> "$GITHUB_PATH"
   
       - name: init vt
-        run: |
-          set -x
-          vt init -k ${{ secrets.VT_KEY }}
-          set +x
+        run: vt init -k ${{ secrets.VT_KEY }}
 
       - name: extract apk(s) urls
         id: find-apk-urls
