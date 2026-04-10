@@ -51,7 +51,9 @@ jobs:
           mv jq ~/jq
   
       - name: Add GITHUB_PATH
-        run: echo "$HOME" >> "$GITHUB_PATH"
+        run: |
+          echo "$HOME" >> "$GITHUB_PATH"
+          mkdir -p /home/runner/.cache
   
       - name: init vt
         run: vt init -k ${{ secrets.VT_KEY }}
