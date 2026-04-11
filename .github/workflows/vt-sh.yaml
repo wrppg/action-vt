@@ -82,7 +82,7 @@ jobs:
           APKs=$(echo "$DL_URLS" | grep -iE '(arm64|v8a?|armv8a?).+\.apk$' || true)
 
           if [ -z "$APKs" ]; then
-              APKs=$(echo "$DL_URLS" | grep -iE '\.apk$' || true)
+              APKs=$(echo "$DL_URLS" | grep -iE '\.e?apk$' || true)
           fi
 
           if [ -z "$APKs" ]; then
