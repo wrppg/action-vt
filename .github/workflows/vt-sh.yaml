@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # - name: Print Subject URL ${{ github.event.client_payload.subject_url || github.event.inputs.subject_url }}
-      - name: Print Subject URL ${{ github.event.client_payload.htmlUrl }}
+      - name: Print Subject URL ${{ github.event.client_payload.html_Url }}
         run: |
           SUBJECT_URLs="${{ github.event.client_payload.subject_url || github.event.inputs.subject_url }}"
           echo "Received subject_url: $SUBJECT_URLs"
