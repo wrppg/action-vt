@@ -69,12 +69,15 @@ jobs:
   
       - name: extract apk(s) urls
         id: find-apk-urls
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           # curl -sL $SUBJECT_URLs | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || echo "result=failure" >> $GITHUB_OUTPUT
           # cat ~/urls.txt || exit 0
 
           echo $SUBJECT_URLs
-          DL_URLS=$(curl -sL $SUBJECT_URLs | jq -r '.assets[].browser_download_url')
+          # DL_URLS=$(curl -sL $SUBJECT_URLs | jq -r '.assets[].browser_download_url')
+          DL_URLS=$(gh api $SUBJECT_URLs --jq '.assets[].browser_download_url')
 
           APKs=$(echo "$DL_URLS" | grep -iE '(arm64|v8a?|armv8a?).+\.apk$' || true)
 
