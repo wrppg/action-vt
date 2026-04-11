@@ -8,6 +8,15 @@ on:
         description: 'The subject URL from the GitHub notification'
         required: true
         type: string
+      repository_FullName:
+        description: 'Repo Name'
+        required: false
+      tag_Name:
+        description: 'Tag'
+        required: false
+      html_Url:
+        description: 'HTML URL'
+        required: false
 
 jobs:
   vt-cli:
