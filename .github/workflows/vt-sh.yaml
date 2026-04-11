@@ -13,7 +13,7 @@ jobs:
   vt-cli:
     runs-on: ubuntu-latest
     steps:
-      - name: Print Subject URL ${{ github.event.client_payload.subject_url || github.event.inputs.subject_url }}
+      - name: Print Subject URL ${{ github.event.client_payload.repositoryFullName || github.event.inputs.subject_url }}
         run: |
           SUBJECT_URLs="${{ github.event.client_payload.subject_url || github.event.inputs.subject_url }}"
           echo "Received subject_url: $SUBJECT_URLs"
@@ -50,23 +50,6 @@ jobs:
           echo "020468de7539ce70ef1bceaf7cde2e8c4f2ca6c3afb84642aabc5c97d9fc2a0d jq" | sha256sum -c
           chmod +x jq
           mv jq ~/jq
-
-      # - name: Cache wget2 apt
-      #   uses: actions/cache@v4
-      #   id: cache-wget2
-      #   with:
-      #     path: /var/cache/apt/archives
-      #     key: ${{ runner.os }}-apt-wget2
-
-      # - name: Update and Download wget2
-      #   if: steps.cache-wget2.outputs.cache-hit != 'true'
-      #   run: |
-      #     sudo apt-get update
-      #     sudo apt-get install -y --download-only wget2
-
-      # - name: Install wget2
-      #   run: |
-      #     sudo apt-get install -y wget2
   
       - name: Add GITHUB_PATH
         run: |
