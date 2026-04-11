@@ -25,7 +25,7 @@ jobs:
       # - name: Print Subject URL ${{ github.event.client_payload.subject_url || github.event.inputs.subject_url }}
       - name: ${{ github.event.inputs.repository_FullName }} - ${{ github.event.inputs.tag_Name }}
         run: |
-          SUBJECT_URLs="${{ github.event.client_payload.subject_url || github.event.inputs.subject_url }}"
+          SUBJECT_URLs="${{ github.event.inputs.subject_url || github.event.client_payload.subject_url }}"
           echo "Received subject_url: $SUBJECT_URLs"
           echo "SUBJECT_URLs=$SUBJECT_URLs" >> $GITHUB_ENV
           echo ${{ github.event.inputs.html_Url }}
