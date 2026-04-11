@@ -97,7 +97,7 @@ jobs:
 
           if [ -z "$APKs" ]; then
               echo "No matching assets found."
-              echo "result=failure" >> $GITHUB_OUTPUT
+              echo "skip=true" >> $GITHUB_OUTPUT
           fi
 
           echo "$APKs"
@@ -105,7 +105,7 @@ jobs:
           
       - name: vt scan urls
         id: scan-urls
-        if: steps.find-apk-urls.outputs.result != 'failure'
+        if: steps.find-apk-urls.outputs.skip != 'true'
         run: |
           cat ~/urls.txt
           # # cat ~/urls.txt | vt scan url - | cut -f 2 -d ' ' | vt analysis -
