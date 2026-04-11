@@ -28,7 +28,7 @@ jobs:
           SUBJECT_URLs="${{ github.event.client_payload.subject_url || github.event.inputs.subject_url }}"
           echo "Received subject_url: $SUBJECT_URLs"
           echo "SUBJECT_URLs=$SUBJECT_URLs" >> $GITHUB_ENV
-          echo ${{ github.event.client_payload.html_Url }}
+          echo ${{ github.event.inputs.html_Url }}
 
       - name: Cache vt
         id: cache-vt
