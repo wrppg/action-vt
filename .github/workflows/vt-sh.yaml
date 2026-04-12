@@ -100,7 +100,7 @@ jobs:
       - name: init vt
         run: vt init -k ${{ secrets.VT_KEY }}
         
-      - name: vt scan urls
+      - name: vt scan files
         id: scan-urls
         if: steps.find-apk-urls.outputs.skip != 'true'
         run: |
