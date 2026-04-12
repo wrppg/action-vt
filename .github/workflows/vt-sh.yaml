@@ -114,6 +114,11 @@ jobs:
           curl -L --remote-name-all -Z --output-dir ~/dl_apk $(cat ~/urls.txt)
           vt scan file ~/dl_apk/*
           # find . -maxdepth 1 \( -name '*.apk' -o  -name '*.apks' -o -name '*.eapk' \) -exec vt scan file {} \+
+
+      - name: vt browser URLs
+        run: |
+          cd dl_apk
+          while read -r hash file; do echo $file; echo "https://www.virustotal.com/gui/file/$hash"; done < <(sha256sum *)
           
       # - name: vt scan files
       #   if: steps.find-apk-urls.outputs.result != 'failure'
