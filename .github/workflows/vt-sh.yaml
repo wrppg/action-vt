@@ -112,7 +112,7 @@ jobs:
           # cat ~/urls.txt | wget2 -i -
           mkdir ~/dl_apk
           curl -L --remote-name-all -Z --output-dir ~/dl_apk $(cat ~/urls.txt)
-          vt scan file dl_apk/*
+          vt scan file ~/dl_apk/*
           # find . -maxdepth 1 \( -name '*.apk' -o  -name '*.apks' -o -name '*.eapk' \) -exec vt scan file {} \+
           
       # - name: vt scan files
