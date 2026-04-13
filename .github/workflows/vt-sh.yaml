@@ -17,6 +17,9 @@ on:
       html_Url:
         description: 'HTML URL'
         required: false
+        
+# for test
+# https://api.github.com/repos/akashdh11/skystream/releases/308091331
 
 jobs:
   vt-cli:
