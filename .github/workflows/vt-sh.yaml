@@ -25,11 +25,10 @@ jobs:
   vt-cli:
     runs-on: ubuntu-latest
     steps:
-      # - name: Print Subject URL ${{ github.event.client_payload.subject_url || github.event.inputs.subject_url }}
       - name: ${{ github.event.inputs.repository_FullName }} - ${{ github.event.inputs.tag_Name }}
         run: |
           SUBJECT_URLs="${{ github.event.inputs.subject_url || github.event.client_payload.subject_url }}"
-          # echo "Received subject_url: $SUBJECT_URLs"
+
           echo "SUBJECT_URLs=$SUBJECT_URLs" >> $GITHUB_ENV
           echo ${{ github.event.inputs.html_Url }}
 
@@ -100,8 +99,8 @@ jobs:
           echo "$APKs"
           echo "$APKs" > ~/urls.txt
 
-      - name: init vt
-        run: vt init -k ${{ secrets.VT_KEY }}
+      # - name: init vt
+      #   run: vt init -k ${{ secrets.VT_KEY }}
         
       - name: vt scan files
         id: scan-urls
@@ -115,7 +114,7 @@ jobs:
           # cat ~/urls.txt | wget2 -i -
           mkdir ~/dl_apk
           curl -L --remote-name-all -Z --output-dir ~/dl_apk $(cat ~/urls.txt)
-          vt scan file ~/dl_apk/*
+          vt -k ${{ secrets.VT_KEY }} scan file ~/dl_apk/*
           # find . -maxdepth 1 \( -name '*.apk' -o  -name '*.apks' -o -name '*.eapk' \) -exec vt scan file {} \+
 
       - name: vt browser URLs
