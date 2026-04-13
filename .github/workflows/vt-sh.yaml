@@ -27,9 +27,9 @@ jobs:
     steps:
       - name: ${{ github.event.inputs.repository_FullName }} - ${{ github.event.inputs.tag_Name }}
         run: |
-          SUBJECT_URLs="${{ github.event.inputs.subject_url || github.event.client_payload.subject_url }}"
+          subject_url="${{ github.event.inputs.subject_url || github.event.client_payload.subject_url }}"
 
-          echo "SUBJECT_URLs=$SUBJECT_URLs" >> $GITHUB_ENV
+          echo "subject_url=$subject_url" >> $GITHUB_ENV
           echo ${{ github.event.inputs.html_Url }}
 
       - name: Cache vt
@@ -74,52 +74,39 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          # curl -sL $SUBJECT_URLs | jq -r .assets[].browser_download_url | grep -E '\.apks?$' | grep -v x86 > ~/urls.txt || echo "result=failure" >> $GITHUB_OUTPUT
-          # cat ~/urls.txt || exit 0
+          gh api $subject_url --jq '.assets[].browser_download_url' > all_urls
 
-          echo $SUBJECT_URLs
-          # DL_URLS=$(curl -sL $SUBJECT_URLs | jq -r '.assets[].browser_download_url')
-          DL_URLS=$(gh api $SUBJECT_URLs --jq '.assets[].browser_download_url')
+          cat all_urls | grep -iE '(arm64|v8a?|armv8a?).*?\.apk$' > dl_urls || \
+          cat all_urls | grep -iE '\.apk$' | grep -iE -v '(armhf|armeabi|armv7a?|v7a?|-x86_64-|-x86-).*?\.apk$' > dl_urls || \
+          cat all_urls | grep -iE '\.(apks|eapk)$' > dl_urls || true
 
-          APKs=$(echo "$DL_URLS" | grep -iE '(arm64|v8a?|armv8a?).+\.apk$' || true)
+          cat dl_urls | grep -Ei '^https?' || echo "skip=true" >> $GITHUB_OUTPUT
 
-          if [ -z "$APKs" ]; then
-              APKs=$(echo "$DL_URLS" | grep -iE '\.e?apk$' || true)
-          fi
-
-          if [ -z "$APKs" ]; then
-              APKs=$(echo "$DL_URLS" | grep -iE '\.apks$'|| true)
-          fi
-
-          if [ -z "$APKs" ]; then
-              echo "No matching assets found."
-              echo "skip=true" >> $GITHUB_OUTPUT
-          fi
-
-          echo "$APKs"
-          echo "$APKs" > ~/urls.txt
+          echo 'dl_urls - filter#1'
+          cat dl_urls
 
       # - name: init vt
       #   run: vt init -k ${{ secrets.VT_KEY }}
+
+      - name: download apk(s)
+        if: steps.find-apk-urls.outputs.skip != 'true'
+        run: |
+          mkdir dl_apk
+          curl -L --remote-name-all -Z --output-dir dl_apk $(cat dl_urls)
         
       - name: vt scan files
         id: scan-urls
         if: steps.find-apk-urls.outputs.skip != 'true'
         run: |
-          cat ~/urls.txt
-          # # cat ~/urls.txt | vt scan url - | cut -f 2 -d ' ' | vt analysis -
-          # # while IFS= read -r url; do vt scan url "$url" | cut -f 2 -d ' ' | vt analysis -; done < ~/urls.txt
-          # while IFS= read -r url; do vt scan url "$url" ; done < ~/urls.txt
+          cd dl_apk
+          vt -k ${{ secrets.VT_KEY }} scan file *
 
-          # cat ~/urls.txt | wget2 -i -
-          mkdir ~/dl_apk
-          curl -L --remote-name-all -Z --output-dir ~/dl_apk $(cat ~/urls.txt)
-          vt -k ${{ secrets.VT_KEY }} scan file ~/dl_apk/*
           # find . -maxdepth 1 \( -name '*.apk' -o  -name '*.apks' -o -name '*.eapk' \) -exec vt scan file {} \+
 
       - name: vt browser URLs
+        if: steps.find-apk-urls.outputs.skip != 'true'
         run: |
-          cd ~/dl_apk
+          cd dl_apk
           while read -r hash file; do echo $file; echo "https://www.virustotal.com/gui/file/$hash"; done < <(sha256sum *)
           
       # - name: vt scan files
