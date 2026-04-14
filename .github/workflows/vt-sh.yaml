@@ -23,6 +23,7 @@ on:
 
 jobs:
   vt-cli:
+    timeout-minutes: 15
     runs-on: ubuntu-latest
     steps:
       - name: ${{ github.event.inputs.repository_FullName }} - ${{ github.event.inputs.tag_Name }}
