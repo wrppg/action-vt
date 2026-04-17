@@ -27,6 +27,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release Info
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           HTML_URL="$(gh api https://api.github.com/repos/GlassOnTin/Haven/releases/310115652 --jq '.html_url')"
           echo "HTML_URL=$HTML_URL" >> $GITHUB_ENV
