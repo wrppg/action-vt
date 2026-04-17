@@ -105,9 +105,11 @@ jobs:
         if: steps.find-apk-urls.outputs.skip != 'true'
         run: |
           cd dl_apk
+          echo "| File Name | VirusTotal URL |" >> $GITHUB_STEP_SUMMARY
+          echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
           while read -r hash file; do 
             echo $file; echo "https://www.virustotal.com/gui/file/$hash";
-            echo "| $file | echo https://www.virustotal.com/gui/file/$hash |" >> $GITHUB_STEP_SUMMARY
+            echo "| $file | [View Report](https://www.virustotal.com/gui/file/$hash) |" >> $GITHUB_STEP_SUMMARY
           done < <(sha256sum *)
           
       # - name: vt scan files
