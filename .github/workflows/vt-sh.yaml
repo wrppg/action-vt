@@ -27,18 +27,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Release Info
+        id: release-info
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           HTML_URL="$(gh api https://api.github.com/repos/GlassOnTin/Haven/releases/310115652 --jq '.html_url')"
-          echo "HTML_URL=$HTML_URL" >> $GITHUB_ENV
+          echo "HTML_URL=$HTML_URL" >> $GITHUB_OUTPUT
           
       - name: ${{ github.event.inputs.repository_FullName }} - ${{ github.event.inputs.tag_Name }}
         run: |
           subject_url="${{ github.event.inputs.subject_url || github.event.client_payload.subject_url }}"
           echo
           echo "subject_url=$subject_url" >> $GITHUB_ENV
-          echo "# ${{ github.event.inputs.html_Url || github.env.HTML_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "# ${{ github.event.inputs.html_Url || steps.release-info.outputs.HTML_URL }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Cache vt
         id: cache-vt
