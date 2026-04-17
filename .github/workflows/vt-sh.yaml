@@ -44,7 +44,7 @@ jobs:
         run: |
           # echo "### ${{ github.event.inputs.html_Url || steps.release-info.outputs.HTML_URL }}" >> $GITHUB_STEP_SUMMARY
 
-          echo "### [${{ steps.release-info.outputs.REPO_FULL }} - ${{ steps.release-info.outputs.TAG_NAME }}]${{ steps.release-info.outputs.HTML_URL }}" >> $GITHUB_STEP_SUMMARY
+          echo "### [${{ steps.release-info.outputs.REPO_FULL }} - ${{ steps.release-info.outputs.TAG_NAME }}](${{ steps.release-info.outputs.HTML_URL }})" >> $GITHUB_STEP_SUMMARY
 
       - name: Cache vt
         id: cache-vt
