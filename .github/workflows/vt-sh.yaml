@@ -33,9 +33,9 @@ jobs:
         run: |
           subject_url="${{ github.event.inputs.subject_url || github.event.client_payload.subject_url }}"
           echo "subject_url=$subject_url" >> $GITHUB_ENV
-          HTML_URL="$(gh api https://api.github.com/repos/GlassOnTin/Haven/releases/310115652 --jq '.html_url')"
+          HTML_URL="$(gh api $subject_url --jq '.html_url')"
           REPO_FULL="$(echo "$subject_url" | grep -iPo '^https?://.*\.github\.com/repos?/\K.+?/[^/]+')"
-          TAG_NAME="$(gh api https://api.github.com/repos/GlassOnTin/Haven/releases/310115652 --jq '.tag_name')"
+          TAG_NAME="$(gh api $subject_url --jq '.tag_name')"
           echo "HTML_URL=$HTML_URL" >> $GITHUB_OUTPUT
           echo "REPO_FULL=$REPO_FULL" >> $GITHUB_OUTPUT
           echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
