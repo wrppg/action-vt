@@ -109,7 +109,7 @@ jobs:
           echo "| :--- | :--- |" >> $GITHUB_STEP_SUMMARY
           while read -r hash file; do 
             echo $file; echo "https://www.virustotal.com/gui/file/$hash";
-            echo "| $file | [View Report](https://www.virustotal.com/gui/file/$hash) |" >> $GITHUB_STEP_SUMMARY
+            echo "| $file | [$hash](https://www.virustotal.com/gui/file/$hash) |" >> $GITHUB_STEP_SUMMARY
           done < <(sha256sum *)
           
       # - name: vt scan files
