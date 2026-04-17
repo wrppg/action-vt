@@ -106,7 +106,8 @@ jobs:
         run: |
           cd dl_apk
           while read -r hash file; do 
-            echo $file; echo "https://www.virustotal.com/gui/file/$hash"; 
+            echo $file; echo "https://www.virustotal.com/gui/file/$hash";
+            echo "| $file | echo https://www.virustotal.com/gui/file/$hash |" >> $GITHUB_STEP_SUMMARY
           done < <(sha256sum *)
           
       # - name: vt scan files
