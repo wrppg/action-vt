@@ -92,11 +92,11 @@ jobs:
         run: |
           gh api $subject_url --jq '.assets[].browser_download_url' > all_urls
 
-          cat all_urls | grep -iE '(arm64|armv8a?|arm64[-_]v8a).*?\.apk$' > ft_urls || \
+          cat all_urls | grep -iE '(arm64|armv8a?|arm64[-_]?v8a?).*?\.apk$' > ft_urls || \
           cat all_urls | grep -iE '\.apk$'  > ft_urls || \
           cat all_urls | grep -iE '\.(apks|eapk)$' > ft_urls || true
 
-          cat ft_urls | grep -iE -v '(\b|-|_)(arm32|armeabi|armhf|armv7a?|x86[-_]64|x86)(\b|-|_).*?\.apk$' > dl_urls || true
+          cat ft_urls | grep -iE -v '(\b|-|_)(arm32|armeabi|armhf|armv7a?|x86[-_]64|x86|x64)(\b|-|_).*?\.apk$' > dl_urls || true
 
           cat dl_urls | grep -Ei '^https?' || echo "skip=true" >> $GITHUB_OUTPUT
 
