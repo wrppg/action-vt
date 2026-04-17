@@ -31,15 +31,20 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          HTML_URL="$(gh api https://api.github.com/repos/GlassOnTin/Haven/releases/310115652 --jq '.html_url')"
-          echo "HTML_URL=$HTML_URL" >> $GITHUB_OUTPUT
-          
-      - name: ${{ github.event.inputs.repository_FullName }} - ${{ github.event.inputs.tag_Name }}
-        run: |
           subject_url="${{ github.event.inputs.subject_url || github.event.client_payload.subject_url }}"
-          echo
           echo "subject_url=$subject_url" >> $GITHUB_ENV
-          echo "### ${{ github.event.inputs.html_Url || steps.release-info.outputs.HTML_URL }}" >> $GITHUB_STEP_SUMMARY
+          HTML_URL="$(gh api https://api.github.com/repos/GlassOnTin/Haven/releases/310115652 --jq '.html_url')"
+          REPO_FULL="$(echo "$subject_url" | grep -iPo '^https?://.*\.github\.com/repos?/\K.+?/[^/]+')"
+          TAG_NAME="$(gh api https://api.github.com/repos/GlassOnTin/Haven/releases/310115652 --jq '.tag_name')"
+          echo "HTML_URL=$HTML_URL" >> $GITHUB_OUTPUT
+          echo "REPO_FULL=$REPO_FULL" >> $GITHUB_OUTPUT
+          echo "TAG_NAME=$TAG_NAME" >> $GITHUB_OUTPUT
+          
+      - name: ${{ steps.release-info.outputs.REPO_FULL }} - ${{ steps.release-info.outputs.TAG_NAME }}
+        run: |
+          # echo "### ${{ github.event.inputs.html_Url || steps.release-info.outputs.HTML_URL }}" >> $GITHUB_STEP_SUMMARY
+
+          echo "### [${{ steps.release-info.outputs.REPO_FULL }} - ${{ steps.release-info.outputs.TAG_NAME }}]${{ steps.release-info.outputs.HTML_URL }}" >> $GITHUB_STEP_SUMMARY
 
       - name: Cache vt
         id: cache-vt
